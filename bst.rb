@@ -99,12 +99,56 @@ class Tree
       else  
         values << current.data
       end
-
       queue.push(current.left) if current.left
       queue.push(current.right) if current.right
     end
 
     values
+  end
+
+  def inorder(node = @root, &block)
+    return [] if node.nil?
+    values = []
+
+    left_values = inorder(node.left, &block)
+    if block_given?
+      yield(node)
+    else 
+      values << node.data
+    end
+    right_values = inorder(node.right, &block)
+    
+    left_values + values + right_values
+  end
+
+  def preorder(node = @root, &block)
+    return [] if node.nil?
+    values = []
+
+    if block_given?
+      yield(node)
+    else
+      values << node.data
+    end
+    left_values = preorder(node.left, &block)
+    right_values = preorder(node.right, &block)
+
+    values + left_values + right_values
+  end
+
+  def postorder(node = @root, &block)
+    return [] if node.nil?
+    values = []
+
+    left_values = postorder(node.left, &block)
+    right_values = postorder(node.right, &block)
+    if block_given?
+      yield(node)
+    else
+      values << node.data
+    end
+
+    left_values + right_values + values
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
