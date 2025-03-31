@@ -99,7 +99,7 @@ class Tree
       else  
         values << current.data
       end
-      
+
       queue.push(current.left) if current.left
       queue.push(current.right) if current.right
     end
@@ -108,8 +108,21 @@ class Tree
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
-    pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
-    puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
-    pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
+    if node.right
+      new_prefix = prefix + (is_left ? '│   ' : '    ')
+      pretty_print(node.right, new_prefix, false)
+    end
+
+    connector = if is_left
+                  '└── '
+                else
+                  '┌── '
+                end
+    puts "#{prefix}#{connector}#{node.data}"
+
+    if node.left
+      new_prefix = prefix + (is_left ? '    ' : '│   ')
+      pretty_print(node.left, new_prefix, true)
+    end
   end
 end
