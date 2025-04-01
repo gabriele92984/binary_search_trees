@@ -21,22 +21,22 @@ class Tree
   end
 
   def build_tree(array)
-    puts "Building tree with array: #{array.inspect}, length: #{array.length}, mid: #{array.length / 2}"
+    # puts "Building tree with array: #{array.inspect}, length: #{array.length}, mid: #{array.length / 2}"
     return nil if array.empty?
   
     mid = array.length / 2
     root_node = Node.new(array[mid])
   
-    puts "Left array: #{array[0...mid].inspect}"
+    # puts "Left array: #{array[0...mid].inspect}"
     root_node.left = build_tree(array[0...mid])
-    puts "Right array: #{array[mid + 1..-1].inspect}"
+    # puts "Right array: #{array[mid + 1..-1].inspect}"
     root_node.right = build_tree(array[mid + 1..-1])
   
     root_node
   end
 
   def insert(value, node = @root)
-    return Mode.new(value) if node.nil?
+    return Node.new(value) if node.nil?
 
     if value < node.data
       node.left = insert(value, node.left)
