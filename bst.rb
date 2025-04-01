@@ -151,7 +151,45 @@ class Tree
     left_values + right_values + values
   end
 
-  def pretty_print(node = @root, prefix = '', is_left = true)
+  def height(node)
+    return -1 if node.nil? # Height of a nil node is -1
+
+    left_height = height(node.left)
+    right_height = height(node.right)
+
+    [left_height, right_height].max + 1
+  end
+
+  def depth(node, current_node = @root, current_depth = 0)
+    return nil if @root.nil? || node.nil?
+    return current_depth if node == current_node
+
+    if node.data < current_node.data
+      depth(node, current_node.left, current_depth + 1)
+    elsif node.data > current_node.data
+      depth(node, current_node.right, current_depth + 1)
+    else
+      # This case should ideally be caught by the 'node == current_node' condition
+      current_depth
+    end
+  end
+
+  def balanced?(node = @root)
+    return true if node.nil?
+
+    left_height = height(node.left)
+    right_height = height(node.right)
+
+    (left_height - right_height).abs <= 1 && balanced?(node.left) && balanced?(node.right)
+  end
+
+  def rebalance
+    return if @root.nil?
+    array = inorder # Get the nodes in inorder traversal (which will be sorted)
+    @root = build_tree(array) # Rebuild the tree from the sorted array
+  end
+
+  def pretty_print(node = @root, prefix = '', is_left = true)                  
     if node.right
       new_prefix = prefix + (is_left ? '│   ' : '    ')
       pretty_print(node.right, new_prefix, false)
@@ -170,3 +208,42 @@ class Tree
     end
   end
 end
+
+# Create a binary search tree from an array of random numbers
+random_array = Array.new(15) { rand(1..100) }
+bst = Tree.new(random_array)
+puts "Initial Tree:"
+bst.pretty_print
+
+# Confirm that the tree is balanced
+puts "Balanced? #{bst.balanced?}"
+
+# Print out all elements in level, pre, post, and in order
+puts "\nLevel Order: #{bst.level_order}"
+puts "Preorder: #{bst.preorder}"
+puts "Postorder: #{bst.postorder}"
+puts "Inorder: #{bst.inorder}"
+
+# Unbalance the tree by adding several numbers > 100
+bst.insert(150)
+bst.insert(160)
+bst.insert(170)
+puts "\nTree after adding unbalanced nodes:"
+bst.pretty_print
+
+# Confirm that the tree is unbalanced
+puts "Balanced? #{bst.balanced?}"
+
+# Balance the tree
+bst.rebalance
+puts "\nBalanced Tree:"
+bst.pretty_print
+
+# Confirm that the tree is balanced
+puts "Balanced? #{bst.balanced?}"
+
+# Print out all elements in level, pre, post, and in order
+puts "\nLevel Order: #{bst.level_order}"
+puts "Preorder: #{bst.preorder}"
+puts "Postorder: #{bst.postorder}"
+puts "Inorder: #{bst.inorder}"
